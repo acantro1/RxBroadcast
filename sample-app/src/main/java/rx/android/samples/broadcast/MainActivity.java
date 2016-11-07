@@ -20,10 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private final DateFormat timeFormat = SimpleDateFormat.getTimeInstance();
 
     private TextView localBroadcastTextView, globalBroadcastTextView, hiPriTextView, loPriTextView;
-    private Subscription localSubscription, globalSubscription, hiPriSubscription,
-            loPriSubscription;
+    private Disposable localDisposable, globalDisposable, hiPriDisposable,
+            loPriDisposable;
     private Handler handler = new Handler();
     private LocalBroadcastManager localBroadcastManager;
     private boolean globalValue = false;
@@ -76,34 +76,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        localSubscription = getLocalBroadcastObservable()
-                .subscribe(new Action1<String>() {
+        localDisposable = getLocalBroadcastObservable()
+                .subscribe(new Consumer<String>() {
                     @Override
-                    public void call(String s) {
+                    public void accept(String s) {
                         setLocalBroadcastTextView(s);
                     }
                 });
 
-        globalSubscription = getGlobalBroadcastObservable()
-                .subscribe(new Action1<Boolean>() {
+        globalDisposable = getGlobalBroadcastObservable()
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void call(Boolean aBoolean) {
+                    public void accept(Boolean aBoolean) throws Exception {
                         setGlobalBroadcastTextView(aBoolean);
                     }
                 });
 
-        hiPriSubscription = getHiPriBroadcastObservable()
-                .subscribe(new Action1<Integer>() {
+        hiPriDisposable = getHiPriBroadcastObservable()
+                .subscribe(new Consumer<Integer>() {
                     @Override
-                    public void call(Integer integer) {
+                    public void accept(Integer integer) {
                         setHiPriTextView(integer);
                     }
                 });
 
-        loPriSubscription = getLoPriBroadcastObservable()
-                .subscribe(new Action1<Integer>() {
+        loPriDisposable = getLoPriBroadcastObservable()
+                .subscribe(new Consumer<Integer>() {
                     @Override
-                    public void call(Integer integer) {
+                    public void accept(Integer integer) {
                         setLoPriTextView(integer);
                     }
                 });
@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
     @NonNull
     private Observable<Boolean> getGlobalBroadcastObservable() {
         return RxBroadcast.fromBroadcast(this, new IntentFilter(ACTION_VALUE_CHANGED))
-                .map(new Func1<Intent, Boolean>() {
+                .map(new Function<Intent, Boolean>() {
                     @Override
-                    public Boolean call(Intent intent) {
+                    public Boolean apply(Intent intent) {
                         return intent.getBooleanExtra(EXTRA_DATA, false);
                     }
                 });
@@ -142,15 +142,15 @@ public class MainActivity extends AppCompatActivity {
     @NonNull
     private Observable<String> getLocalBroadcastObservable() {
         return RxBroadcast.fromLocalBroadcast(this, new IntentFilter(ACTION_TICK))
-                .map(new Func1<Intent, Long>() {
+                .map(new Function<Intent, Long>() {
                     @Override
-                    public Long call(Intent intent) {
+                    public Long apply(Intent intent) {
                         return intent.getLongExtra(EXTRA_DATA, 0);
                     }
                 })
-                .map(new Func1<Long, String>() {
+                .map(new Function<Long, String>() {
                     @Override
-                    public String call(Long aLong) {
+                    public String apply(Long aLong) {
                         return timeFormat.format(new Date(aLong));
                     }
                 });
@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 intentFilter,
                 allowMultiplesOfFive)
-                .map(new Func1<Intent, Integer>() {
+                .map(new Function<Intent, Integer>() {
                     @Override
-                    public Integer call(Intent intent) {
+                    public Integer apply(Intent intent) {
                         return intent.getIntExtra(EXTRA_DATA, 0);
                     }
                 });
@@ -192,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.setPriority(IntentFilter.SYSTEM_LOW_PRIORITY);
 
         return RxBroadcast.fromBroadcast(this, intentFilter)
-                .map(new Func1<Intent, Integer>() {
+                .map(new Function<Intent, Integer>() {
                     @Override
-                    public Integer call(Intent intent) {
+                    public Integer apply(Intent intent) {
                         return intent.getIntExtra(EXTRA_DATA, 0);
                     }
                 });
@@ -204,20 +204,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        if (localSubscription != null) {
-            localSubscription.unsubscribe();
+        if (localDisposable != null) {
+            localDisposable.dispose();
         }
 
-        if (globalSubscription != null) {
-            globalSubscription.unsubscribe();
+        if (globalDisposable != null) {
+            globalDisposable.dispose();
         }
 
-        if (hiPriSubscription != null) {
-            hiPriSubscription.unsubscribe();
+        if (hiPriDisposable != null) {
+            hiPriDisposable.dispose();
         }
 
-        if (loPriSubscription != null) {
-            loPriSubscription.unsubscribe();
+        if (loPriDisposable != null) {
+            loPriDisposable.dispose();
         }
         handler.removeCallbacks(timerRunnable);
     }

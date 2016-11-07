@@ -1,5 +1,9 @@
 # Change Log
 
+Version 2.0.0 *(2016-11-07)*
+----------------------------
+Added support for RxJava2
+
 Version 1.1.0 *(2016-09-27)*
 ----------------------------
 Added support for Ordered Broadcasts
