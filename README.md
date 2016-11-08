@@ -17,7 +17,7 @@ or
 # Unregistering
 Be sure to unregistering your receiver, this is typically done in the `Activity.onStop()`, by simply unsubscribing from your earlier subscription.
 
-`Subscription subscription = RxBroadcast.fromLocalBroadcast(context, intentFilter).subscribe(...);`
+`Disposable disposable = RxBroadcast.fromLocalBroadcast(context, intentFilter).subscribe(...);`
 
 ...
 ```
@@ -25,8 +25,8 @@ Be sure to unregistering your receiver, this is typically done in the `Activity.
   protected void onStop() {
     super.onStop();
 
-    if (subscription != null) {
-      subscription.unsubscribe();
+    if (disposable != null) {
+      disposable.dispose();
     }
   }
 ```
