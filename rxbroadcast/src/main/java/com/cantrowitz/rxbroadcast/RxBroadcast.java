@@ -7,9 +7,10 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 
-import rx.AsyncEmitter;
+import rx.Emitter;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Cancellable;
 
 /**
  * Created by adamcantrowitz on 9/1/15.
@@ -142,9 +143,9 @@ public class RxBroadcast {
     private static Observable<Intent> createBroadcastObservable(
             final BroadcastRegistrarStrategy broadcastRegistrarStrategy,
             final OrderedBroadcastAbortStrategy orderedBroadcastAbortStrategy) {
-        return Observable.fromEmitter(new Action1<AsyncEmitter<Intent>>() {
+        return Observable.fromEmitter(new Action1<Emitter<Intent>>() {
             @Override
-            public void call(final AsyncEmitter<Intent> intentEmitter) {
+            public void call(final Emitter<Intent> intentEmitter) {
 
                 final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
                     @Override
@@ -160,7 +161,7 @@ public class RxBroadcast {
                     }
                 };
 
-                intentEmitter.setCancellation(new AsyncEmitter.Cancellable() {
+                intentEmitter.setCancellation(new Cancellable() {
                     @Override
                     public void cancel() throws Exception {
                         broadcastRegistrarStrategy.unregisterBroadcastReceiver(broadcastReceiver);
@@ -169,6 +170,6 @@ public class RxBroadcast {
 
                 broadcastRegistrarStrategy.registerBroadcastReceiver(broadcastReceiver);
             }
-        }, AsyncEmitter.BackpressureMode.NONE);
+        }, Emitter.BackpressureMode.NONE);
     }
 }

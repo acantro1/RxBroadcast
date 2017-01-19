@@ -1,5 +1,11 @@
 # Change Log
 
+Version 1.2.5 *(2017-01-17)*
+----------------------------
+Synchronized versioning with RxJava
+
+Replaced deprecated AsyncEmitter with Emitter
+
 Version 1.1.0 *(2016-09-27)*
 ----------------------------
 Added support for Ordered Broadcasts
