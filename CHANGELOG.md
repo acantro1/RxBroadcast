@@ -1,6 +1,6 @@
 # Change Log
 
-Version 1.2.5 *(2017-01-17)*
+Version 1.2.5 *(2017-01-19)*
 ----------------------------
 Synchronized versioning with RxJava
 
