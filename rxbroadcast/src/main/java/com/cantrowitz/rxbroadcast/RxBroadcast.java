@@ -143,7 +143,7 @@ public class RxBroadcast {
     private static Observable<Intent> createBroadcastObservable(
             final BroadcastRegistrarStrategy broadcastRegistrarStrategy,
             final OrderedBroadcastAbortStrategy orderedBroadcastAbortStrategy) {
-        return Observable.fromEmitter(new Action1<Emitter<Intent>>() {
+        return Observable.create(new Action1<Emitter<Intent>>() {
             @Override
             public void call(final Emitter<Intent> intentEmitter) {
 
