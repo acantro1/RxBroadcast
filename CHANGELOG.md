@@ -1,5 +1,9 @@
 # Change Log
 
+Version 1.1.2 *(2017-05-12)*
+----------------------------
+Updated RxJava to version 1.3.0 and replaced deprecated fromEmitter() to create()
+
 Version 1.1.1 *(2017-01-19)*
 ----------------------------
 Updated RxJava to version 1.2.5 and replaced deprecated AsyncEmitter with Emitter

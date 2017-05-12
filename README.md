@@ -59,7 +59,7 @@ Be sure to unregistering your receiver, this is typically done in the `Activity.
 # Installation
 
 ```groovy
-compile 'com.cantrowitz:rxbroadcast:1.0.1'
+compile 'com.cantrowitz:rxbroadcast:1.1.2'
 ```
 
 License
